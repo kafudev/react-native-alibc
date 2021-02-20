@@ -5,13 +5,13 @@
 ## Installation
 
 ```sh
-npm install react-native-alibc
+npm install @kafudev/react-native-alibc
 ```
 
 ## Usage
 
 ```js
-import Alibc from "react-native-alibc";
+import Alibc from "@kafudev/react-native-alibc";
 
 // ...
 
