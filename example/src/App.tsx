@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import Alibc from 'react-native-alibc';
-
+import { StyleSheet, View, Text, Button } from 'react-native';
+import Alibc from '@kafudev/react-native-alibc';
 
 export default function App() {
   const [result, setResult] = React.useState<number | undefined>();
@@ -14,6 +13,39 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Result: {result}</Text>
+      <Button
+        onPress={() => {
+          // mm_113435089_555800032_109026900326
+          Alibc.init('32486832', '', false).then((res:any) => {
+            console.log('Alibc init', res);
+          });
+        }}
+        title="初始化百川sdk"
+      />
+      <Button
+        onPress={() => {
+          Alibc.login().then((res:any) => {
+            console.log('Alibc login', res);
+          });
+        }}
+        title="授权登录"
+      />
+      <Button
+        onPress={() => {
+          Alibc.logout().then((res:any) => {
+            console.log('Alibc logout', res);
+          });
+        }}
+        title="退出登录"
+      />
+      <Button
+        onPress={() => {
+          Alibc.getUser().then((res:any) => {
+            console.log('Alibc getUser', res);
+          });
+        }}
+        title="获取用户信息"
+      />
     </View>
   );
 }
