@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -36,19 +37,13 @@ import com.alibaba.baichuan.android.trade.callback.AlibcTradeInitCallback;
 
 import com.alibaba.baichuan.android.trade.AlibcTrade;
 //import com.alibaba.baichuan.android.trade.AlibcTradeSDK;
-//import com.alibaba.baichuan.android.trade.constants.AlibcConstants;
 import com.alibaba.baichuan.android.trade.model.AlibcShowParams;
-//import com.alibaba.baichuan.android.trade.model.AlibcTaokeParams;
 import com.alibaba.baichuan.android.trade.model.OpenType;
 import com.alibaba.baichuan.android.trade.page.AlibcAddCartPage;
 import com.alibaba.baichuan.android.trade.page.AlibcBasePage;
 import com.alibaba.baichuan.android.trade.page.AlibcDetailPage;
-//import com.alibaba.baichuan.android.trade.page.AlibcMiniDetailPage;
-//import com.alibaba.baichuan.android.trade.page.AlibcPage;
-//import com.alibaba.baichuan.android.trade.page.AlibcPage;
-import com.alibaba.baichuan.android.trade.page.AlibcShopPage;
-import com.alibaba.baichuan.android.trade.page.AlibcMyOrdersPage;
 import com.alibaba.baichuan.android.trade.page.AlibcMyCartsPage;
+import com.alibaba.baichuan.android.trade.page.AlibcShopPage;
 import com.alibaba.baichuan.android.trade.callback.AlibcTradeCallback;
 //import com.alibaba.baichuan.android.trade.model.ResultType;
 //import com.alibaba.baichuan.android.trade.model.TradeResult;
@@ -114,9 +109,7 @@ public class AlibcModule extends ReactContextBaseJavaModule {
     sContext.addActivityEventListener(mActivityEventListener);
 
     alibcShowParams = new AlibcShowParams();// OpenType.Auto, false
-
     alibcShowParams.setOpenType(OpenType.Auto);
-
     alibcShowParams.setClientType("taobao");
     alibcShowParams.setBackUrl("alisdk://");
     exParams = new HashMap<>();
@@ -132,23 +125,21 @@ public class AlibcModule extends ReactContextBaseJavaModule {
    * 初始化
    */
   @ReactMethod
-  public void init(final String appkey, final String pid, final Boolean forceH5, final Promise promise) {
-    // this.alibcTaokeParams = new AlibcTaokeParams("", "", "");//pid
-    this.alibcTaokeParams = new AlibcTaokeParams(pid, "", "");// pid
-    this.alibcTaokeParams.extraParams = new HashMap<>();
-    this.alibcTaokeParams.extraParams.put("taokeAppkey", appkey);
-    // this.alibcTaokeParams.setPid("mm_113435089_555800032_109026900326");
-    // this.alibcTaokeParams.extraParams.put("taokeAppkey", "25634417");
-    // final Application application = mActivity.getApplication();
+  public void init(final String appkey, final String pid, final Promise promise) {
+    alibcTaokeParams = new AlibcTaokeParams("", "", "");
+    alibcTaokeParams.extraParams = new HashMap<>();
+    alibcTaokeParams.extraParams.put("taokeAppkey", appkey);
+    alibcTaokeParams.setPid(pid);// pid
     AlibcTradeSDK.asyncInit(getCurrentActivity().getApplication(), new AlibcTradeInitCallback() {
       @Override
       public void onSuccess() {
-        // AlibcTradeSDK.setForceH5(forceH5);
+        Toast.makeText(sContext, "初始化成功", Toast.LENGTH_SHORT).show();
         promise.resolve(true);
       }
 
       @Override
       public void onFailure(int code, String msg) {
+        Toast.makeText(sContext, "初始化失败:" + msg, Toast.LENGTH_SHORT).show();
         WritableMap map = Arguments.createMap();
         map.putInt("code", code);
         map.putString("msg", msg);
@@ -183,6 +174,10 @@ public class AlibcModule extends ReactContextBaseJavaModule {
     alibcLogin.showLogin(new AlibcLoginCallback() {
       @Override
       public void onSuccess(int loginResult, String openId, String userNick) {
+        // 参数说明：
+        // loginResult(0--登录初始化成功；1--登录初始化完成；2--登录成功)
+        // openId：用户id
+        // userNick: 用户昵称
         Session session = AlibcLogin.getInstance().getSession();
         WritableMap map = Arguments.createMap();
         map.putString("nick", session.nick);
@@ -204,11 +199,17 @@ public class AlibcModule extends ReactContextBaseJavaModule {
     });
   }
 
+  /**
+   * 是否登录
+   */
   @ReactMethod
   public void isLogin(final Promise promise) {
     promise.resolve(AlibcLogin.getInstance().isLogin());
   }
 
+  /**
+   * 登录用户信息
+   */
   @ReactMethod
   public void getUser(final Promise promise) {
     if (AlibcLogin.getInstance().isLogin()) {
@@ -258,184 +259,99 @@ public class AlibcModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void show(final ReadableMap param, final String Type, final Promise promise) {
+  public void open(final ReadableMap param, final String openType, final String clientType, final Promise promise) {
     alibcShowParams = new AlibcShowParams();// OpenType.Auto, false
-    alibcShowParams.setClientType("taobao");
+    alibcShowParams.setClientType(clientType);
     alibcShowParams.setBackUrl("alisdk://");
 
-    System.out.println("Urlll11111111111111" + Type);
-    switch (Type) {
+    System.out.println("Alibc show clientType:" + clientType + "  openType:" + openType);
+    switch (openType) {
       case "Auto":
-        System.out.println("Urlll44444444444" + Type);
         alibcShowParams.setOpenType(OpenType.Auto);
         break;
       case "H5":
-        System.out.println("Urlll55555555555" + Type);
         alibcShowParams.setOpenType(OpenType.Auto);
         break;
       case "Native":
-        System.out.println("Urlll66666666666" + Type);
         alibcShowParams.setOpenType(OpenType.Native);
-
         break;
       default:
-        System.out.println("Urlll7777777777" + Type);
         alibcShowParams.setOpenType(OpenType.Auto);
         break;
     }
 
+    AlibcTaokeParams taokeParams = this.alibcTaokeParams;
+    // taokeParams.setPid("mm_112883640_11584347_72287650277");
+
+    Map<String, String> trackParams = new HashMap<>();
+
+    // 调用类型
     String type = param.getString("type");
-    switch (type) {
-      case "detail":
-        this._showInWebView(new AlibcDetailPage(param.getString("payload")), "detail", promise);
-        break;
-      case "url":
-        System.out.println("Urlll11111111111111" + Type);
-        // if(Type == "H5"){
-        if (Type.equals("H5")) {
-          System.out.println("Urlll122222222222" + Type);
-          // Intent intent = new Intent(mActivity, WebViewActivity.class);
-          // intent.putExtra("url", param.getString("payload"));
-          // mActivity.startActivity(intent);
+    if (type.equals("url")) {
+      // 通过百川内部的webview打开页面
+      String url = param.getString("url");
+      AlibcTrade.openByUrl(getCurrentActivity(), "", url, null, new WebViewClient(), new WebChromeClient(), alibcShowParams,
+          taokeParams, trackParams, new AlibcTradeCallback() {
+            @Override
+            public void onTradeSuccess(AlibcTradeResult tradeResult) {
+              AlibcLogger.i("MainActivity", "request success");
+              promise.resolve(true);
+            }
 
-          Intent intent = new Intent();
-          intent.setData(Uri.parse(param.getString("payload")));
-          intent.setAction(Intent.ACTION_VIEW);
-          mActivity.startActivity(intent);
-        } else {
-          System.out.println("Urlll133333333333333" + Type);
-          // this._showInWebView(new AlibcDetailPage(param.getString("payload")),"detail",
-          // promise);
-          this._showByUrl(param.getString("payload"), promise);
-          //
-        }
+            @Override
+            public void onFailure(int code, String msg) {
+              AlibcLogger.e("MainActivity", "code=" + code + ", msg=" + msg);
+              if (code == -1) {
+                Toast.makeText(sContext, msg, Toast.LENGTH_SHORT).show();
+              }
+              WritableMap map = Arguments.createMap();
+              map.putInt("code", code);
+              map.putString("msg", msg);
+              promise.resolve(map);
+            }
+          });
 
-        break;
-      case "shop":
-        this._showInWebView(new AlibcShopPage(param.getString("payload")), "shop", promise);
-        break;
-      case "orders":
-        ReadableMap payload = param.getMap("payload");
-        this._showInWebView(new AlibcMyOrdersPage(payload.getInt("orderType"), payload.getBoolean("isAllOrder")),
-            "orders", promise);
-        break;
-      case "addCard":
-        this._showInWebView(new AlibcAddCartPage(param.getString("payload")), "addCard", promise);
-        break;
-      case "mycard":
-        this._showInWebView(new AlibcMyCartsPage(), "cart", promise);
-        break;
-      default:
-        promise.resolve(false);
-        // callback.invoke(INVALID_PARAM);
-        break;
+    } else {
+      AlibcBasePage mPage = new AlibcBasePage();
+      switch (type) {
+        case "detail":
+          mPage = new AlibcDetailPage(param.getString("payload"));
+          break;
+        case "shop":
+          mPage = new AlibcShopPage(param.getString("payload"));
+          break;
+        case "addCard":
+          mPage = new AlibcAddCartPage(param.getString("payload"));
+          break;
+        case "mycard":
+          mPage = new AlibcMyCartsPage();
+          break;
+        default:
+          promise.resolve(false);
+          break;
+      }
+
+      AlibcTrade.openByBizCode(getCurrentActivity(), mPage, null, new WebViewClient(), new WebChromeClient(), type,
+          alibcShowParams, taokeParams, trackParams, new AlibcTradeCallback() {
+            @Override
+            public void onTradeSuccess(AlibcTradeResult tradeResult) {
+              // 交易成功回调（其他情形不回调）
+              AlibcLogger.i("MainActivity", "open detail page success");
+              promise.resolve(true);
+            }
+
+            @Override
+            public void onFailure(int code, String msg) {
+              AlibcLogger.e("MainActivity", "code=" + code + ", msg=" + msg);
+              if (code == -1) {
+                Toast.makeText(sContext, "唤端失败，失败模式为none", Toast.LENGTH_SHORT).show();
+              }
+              WritableMap map = Arguments.createMap();
+              map.putInt("code", code);
+              map.putString("msg", msg);
+              promise.resolve(map);
+            }
+          });
     }
   }
-
-  public void showInWebView(final WebView webview, WebViewClient webViewClient, final ReadableMap param) {
-    String type = param.getString("type");
-    switch (type) {
-      case "detail":
-        this._showWebView(new AlibcShopPage(param.getString("payload")));
-        break;
-      case "url":
-        this._showWebView(new AlibcShopPage(param.getString("payload")));
-        break;
-      case "shop":
-        this._showWebView(new AlibcShopPage(param.getString("payload")));
-        break;
-      case "auction":
-        // PromotionsPage promotionsPage = new PromotionsPage("shop", "商家测试帐号17");
-        // this._showWebView(new Ali(param.getString("payload")));
-        break;
-      case "orders":
-        ReadableMap payload = param.getMap("payload");
-        this._showWebView(new AlibcMyOrdersPage(payload.getInt("orderType"), payload.getBoolean("isAllOrder")));
-        break;
-      case "addCard":
-        this._showWebView(new AlibcAddCartPage(param.getString("payload")));
-        break;
-      case "mycard":
-        this._showWebView(new AlibcMyCartsPage());
-        break;
-      default:
-        WritableMap event = Arguments.createMap();
-        event.putString("type", INVALID_PARAM);
-        sContext.getJSModule(RCTEventEmitter.class).receiveEvent(webview.getId(), "onTradeResult", event);
-        break;
-    }
-  }
-
-  private void _showByUrl(String url, final Promise promise) {
-    // 以显示传入url的方式打开页面（第二个参数是套件名称）
-    // alibcShowParams.setOpenType(OpenType.Native);
-    AlibcShowParams showParams = new AlibcShowParams();
-    showParams.setOpenType(OpenType.Native);
-    showParams.setClientType("taobao");
-    showParams.setBackUrl("alisdk://");
-    // showParams.setNativeOpenFailedMode(AlibcFailModeType.AlibcNativeFailModeJumpH5);
-    AlibcTaokeParams taokeParams = new AlibcTaokeParams("", "", "");
-    taokeParams.setPid("mm_113435089_910000275_109603600237");
-
-    taokeParams.extraParams = new HashMap<>();
-    taokeParams.extraParams.put("taokeAppkey", "25634417");
-
-    AlibcTrade.openByUrl(mActivity, "", url, null, new WebViewClient(), new WebChromeClient(), showParams, taokeParams,
-        exParams, new AlibcTradeCallback() {
-          @Override
-          public void onTradeSuccess(AlibcTradeResult tradeResult) {
-            AlibcLogger.i(TAG, "request success");
-          }
-
-          @Override
-          public void onFailure(int code, String msg) {
-            AlibcLogger.e(TAG, "code=" + code + ", msg=" + msg);
-            if (code == -1) {
-
-              // Toast.makeText(FeatureActivity.this, msg, Toast.LENGTH_SHORT).show();
-            }
-          }
-        });
-  }
-
-  private void _showInWebView(final AlibcBasePage page, final String ByCode, final Promise promise) {
-    AlibcTrade.openByBizCode(mActivity, page, null, new WebViewClient(), new WebChromeClient(), ByCode, alibcShowParams,
-        alibcTaokeParams, exParams, new AlibcTradeCallback() {
-          @Override
-          public void onTradeSuccess(AlibcTradeResult tradeResult) {
-            // 交易成功回调（其他情形不回调）
-            AlibcLogger.i(TAG, "open detail page success");
-          }
-
-          @Override
-          public void onFailure(int code, String msg) {
-            // 失败回调信息
-            AlibcLogger.e(TAG, "code=" + code + ", msg=" + msg);
-            if (code == -1) {
-
-            }
-          }
-        });
-  }
-
-  private void _showWebView(final AlibcBasePage page) {
-    AlibcTrade.openByBizCode(mActivity, page, null, new WebViewClient(), new WebChromeClient(), "detail",
-        alibcShowParams, alibcTaokeParams, exParams, new AlibcTradeCallback() {
-          @Override
-          public void onTradeSuccess(AlibcTradeResult tradeResult) {
-            // 交易成功回调（其他情形不回调）
-            AlibcLogger.i(TAG, "open detail page success");
-          }
-
-          @Override
-          public void onFailure(int code, String msg) {
-            // 失败回调信息
-            AlibcLogger.e(TAG, "code=" + code + ", msg=" + msg);
-            if (code == -1) {
-
-            }
-          }
-        });
-  }
-
 }

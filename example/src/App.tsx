@@ -16,7 +16,7 @@ export default function App() {
       <Button
         onPress={() => {
           // mm_113435089_555800032_109026900326
-          Alibc.init('32486832', '', false).then((res:any) => {
+          Alibc.init('32486832', 'mm_113435089_555800032_109026900326').then((res: any) => {
             console.log('Alibc init', res);
           });
         }}
@@ -24,7 +24,7 @@ export default function App() {
       />
       <Button
         onPress={() => {
-          Alibc.login().then((res:any) => {
+          Alibc.login().then((res: any) => {
             console.log('Alibc login', res);
           });
         }}
@@ -32,7 +32,7 @@ export default function App() {
       />
       <Button
         onPress={() => {
-          Alibc.logout().then((res:any) => {
+          Alibc.logout().then((res: any) => {
             console.log('Alibc logout', res);
           });
         }}
@@ -40,11 +40,35 @@ export default function App() {
       />
       <Button
         onPress={() => {
-          Alibc.getUser().then((res:any) => {
+          Alibc.getUser().then((res: any) => {
             console.log('Alibc getUser', res);
           });
         }}
         title="获取用户信息"
+      />
+      <Button
+        onPress={() => {
+          Alibc.open(
+            { type: 'url', url: 'http://baidu.com' },
+            'H5',
+            'taobao'
+          ).then((res: any) => {
+            console.log('Alibc open url:', res);
+          });
+        }}
+        title="打开url"
+      />
+      <Button
+        onPress={() => {
+          Alibc.open(
+            { type: 'shop', payload: '65626181' },
+            'Auto',
+            'taobao'
+          ).then((res: any) => {
+            console.log('Alibc open code:', res);
+          });
+        }}
+        title="打开code"
       />
     </View>
   );
