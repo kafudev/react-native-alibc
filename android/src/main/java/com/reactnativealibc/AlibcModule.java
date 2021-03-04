@@ -146,6 +146,7 @@ public class AlibcModule extends ReactContextBaseJavaModule {
         promise.resolve(map);
       }
     });
+    Toast.makeText(sContext, "初始化中", Toast.LENGTH_SHORT).show();
   }
 
   /**
