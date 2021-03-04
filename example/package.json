@@ -6,7 +6,8 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start"
+    "start": "react-native start",
+    "log": "adb logcat | findstr com.kafu.fenxiang"
   },
   "dependencies": {
     "react": "16.13.1",

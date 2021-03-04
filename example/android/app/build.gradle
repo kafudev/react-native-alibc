@@ -186,12 +186,6 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:latest.release'
     implementation 'com.tencent.bugly:nativecrashreport:latest.release'
 
-    // 电商基础组件
-    implementation 'com.alibaba.sdk.android:AlibcTradeCommon:4.0.0.16@aar'
-    implementation 'com.alibaba.sdk.android:AlibcTradeBiz:4.0.0.16@aar'
-    implementation 'com.alibaba.sdk.android:nb_trade:4.0.0.16@aar'
-    implementation 'com.alibaba:fastjson:1.2.41@jar'
-
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

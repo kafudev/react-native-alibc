@@ -1,4 +1,4 @@
-package com.example.reactnativealibc;
+package com.kafu.fenxiang;
 
 import com.facebook.react.ReactActivity;
 

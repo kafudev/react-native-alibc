@@ -1,7 +1,9 @@
-package com.example.reactnativealibc;
+package com.kafu.fenxiang;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.kafu.fenxiang.BuildConfig;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -52,7 +54,7 @@ public class MainApplication extends Application implements ReactApplication {
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); // Remove this line if you don't want
                                                                              // Flipper enabled
     // bugly 初始化
-    CrashReport.initCrashReport(getApplicationContext(), "31bbaaab39", true);
+//    CrashReport.initCrashReport(getApplicationContext(), "31bbaaab39", true);
   }
 
   /**
