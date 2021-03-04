@@ -1,6 +1,7 @@
 package com.reactnativealibc;
 
 import com.alibaba.baichuan.trade.biz.AlibcConstants;
+import com.alibaba.baichuan.trade.biz.AlibcTradeCallback;
 import com.alibaba.baichuan.trade.biz.context.AlibcTradeResult;
 import com.alibaba.baichuan.trade.biz.core.taoke.AlibcTaokeParams;
 import com.alibaba.baichuan.trade.biz.login.AlibcLogin;
@@ -27,16 +28,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.ali.auth.third.login.callback.LogoutCallback;
 import com.ali.auth.third.ui.context.CallbackContext;
-//import com.alibaba.baichuan.android.trade.adapter.login.AlibcLogin;
 import com.ali.auth.third.core.model.Session;
-//import com.alibaba.baichuan.android.trade.callback.AlibcLoginCallback;
 import com.alibaba.baichuan.android.trade.AlibcTradeSDK;
 import com.alibaba.baichuan.android.trade.callback.AlibcTradeInitCallback;
 
 import com.alibaba.baichuan.android.trade.AlibcTrade;
-//import com.alibaba.baichuan.android.trade.AlibcTradeSDK;
 import com.alibaba.baichuan.android.trade.model.AlibcShowParams;
 import com.alibaba.baichuan.android.trade.model.OpenType;
 import com.alibaba.baichuan.android.trade.page.AlibcAddCartPage;
@@ -44,11 +41,7 @@ import com.alibaba.baichuan.android.trade.page.AlibcBasePage;
 import com.alibaba.baichuan.android.trade.page.AlibcDetailPage;
 import com.alibaba.baichuan.android.trade.page.AlibcMyCartsPage;
 import com.alibaba.baichuan.android.trade.page.AlibcShopPage;
-import com.alibaba.baichuan.android.trade.callback.AlibcTradeCallback;
-//import com.alibaba.baichuan.android.trade.model.ResultType;
-//import com.alibaba.baichuan.android.trade.model.TradeResult;
-//import com.taobao.applink.util.TBAppLinkUtil;
-//import com.alibaba.baichuan.android.trade.;
+import com.alibaba.baichuan.android.trade.callback.AlibcTradeInitCallback;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -155,23 +148,6 @@ public class AlibcModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void login(final Promise promise) {
     AlibcLogin alibcLogin = AlibcLogin.getInstance();
-
-    // alibcLogin.showLogin(new AlibcLoginCallback() {
-    // @Override
-    // public void onSuccess(int loginResult, String openId, String userNick) {
-    // // 参数说明：
-    // // loginResult(0--登录初始化成功；1--登录初始化完成；2--登录成功)
-    // // openId：用户id
-    // // userNick: 用户昵称
-    // Log.i(TAG, "获取淘宝用户信息: " + AlibcLogin.getInstance().getSession());
-    // }
-    //
-    // @Override
-    // public void onFailure(int code, String msg) {
-    // // code：错误码 msg： 错误信息
-    // }
-    // });
-
     alibcLogin.showLogin(new AlibcLoginCallback() {
       @Override
       public void onSuccess(int loginResult, String openId, String userNick) {
