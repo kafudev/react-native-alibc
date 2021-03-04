@@ -1,20 +1,10 @@
 package com.reactnativealibc;
 
-import com.alibaba.baichuan.trade.biz.AlibcConstants;
-import com.alibaba.baichuan.trade.biz.AlibcTradeCallback;
-import com.alibaba.baichuan.trade.biz.context.AlibcTradeResult;
-import com.alibaba.baichuan.trade.biz.core.taoke.AlibcTaokeParams;
-import com.alibaba.baichuan.trade.biz.login.AlibcLogin;
-import com.alibaba.baichuan.trade.biz.login.AlibcLoginCallback;
-import com.alibaba.baichuan.trade.common.utils.AlibcLogger;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.BaseActivityEventListener;
-import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.Arguments;
@@ -28,12 +18,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.ali.auth.third.ui.context.CallbackContext;
 import com.ali.auth.third.core.model.Session;
+import com.alibaba.baichuan.android.trade.AlibcTrade;
 import com.alibaba.baichuan.android.trade.AlibcTradeSDK;
 import com.alibaba.baichuan.android.trade.callback.AlibcTradeInitCallback;
-
-import com.alibaba.baichuan.android.trade.AlibcTrade;
+import com.alibaba.baichuan.android.trade.callback.AlibcTradeCallback;
 import com.alibaba.baichuan.android.trade.model.AlibcShowParams;
 import com.alibaba.baichuan.android.trade.model.OpenType;
 import com.alibaba.baichuan.android.trade.page.AlibcAddCartPage;
@@ -41,7 +30,13 @@ import com.alibaba.baichuan.android.trade.page.AlibcBasePage;
 import com.alibaba.baichuan.android.trade.page.AlibcDetailPage;
 import com.alibaba.baichuan.android.trade.page.AlibcMyCartsPage;
 import com.alibaba.baichuan.android.trade.page.AlibcShopPage;
-import com.alibaba.baichuan.android.trade.callback.AlibcTradeInitCallback;
+import com.alibaba.baichuan.trade.biz.AlibcConstants;
+import com.alibaba.baichuan.trade.biz.context.AlibcTradeResult;
+import com.alibaba.baichuan.trade.biz.core.taoke.AlibcTaokeParams;
+import com.alibaba.baichuan.trade.biz.login.AlibcLogin;
+import com.alibaba.baichuan.trade.biz.login.AlibcLoginCallback;
+import com.alibaba.baichuan.trade.common.utils.AlibcLogger;
+import com.alibaba.baichuan.trade.common.AlibcMiniTradeCommon;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +53,7 @@ import android.widget.Toast;
 
 public class AlibcModule extends ReactContextBaseJavaModule {
 
-  private static ReactContext sContext;
+  private static ReactApplicationContext sContext;
   private static final String TAG = "AlibcModule";
 
   private final static String NOT_LOGIN = "not login";
@@ -68,38 +63,20 @@ public class AlibcModule extends ReactContextBaseJavaModule {
   private Map<String, String> exParams;// yhhpass参数
   private AlibcShowParams alibcShowParams;// 页面打开方式，默认，H5，Native
   private AlibcTaokeParams alibcTaokeParams = null;// 淘客参数，包括pid，unionid，subPid
-  private static Activity mActivity;
-  private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
-    @Override
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent intent) {
-      CallbackContext.onActivityResult(requestCode, resultCode, intent);
-    }
-  };
 
   static private AlibcModule mAlibcModule = null;
 
   static public AlibcModule sharedInstance(ReactApplicationContext context) {
+    sContext = context;
     if (mAlibcModule == null)
       return new AlibcModule(context);
     else
       return mAlibcModule;
   }
 
-  public static void init(Activity activity) {
-    if (activity == null)
-      return;
-    mActivity = activity;
-  }
-
-  @ReactMethod
-  public void multiply(int a, int b, Promise promise) {
-    promise.resolve(a * b);
-  }
-
   public AlibcModule(ReactApplicationContext reactApplicationContext) {
     super(reactApplicationContext);
     sContext = reactApplicationContext;
-    sContext.addActivityEventListener(mActivityEventListener);
 
     alibcShowParams = new AlibcShowParams();// OpenType.Auto, false
     alibcShowParams.setOpenType(OpenType.Auto);
@@ -114,11 +91,18 @@ public class AlibcModule extends ReactContextBaseJavaModule {
     return "Alibc";
   }
 
+  @ReactMethod
+  public void multiply(int a, int b, Promise promise) {
+    promise.resolve(a * b);
+  }
+
+
   /**
    * 初始化
    */
   @ReactMethod
   public void init(final String appkey, final String pid, final Promise promise) {
+    AlibcMiniTradeCommon.turnOnDebug();
     alibcTaokeParams = new AlibcTaokeParams("", "", "");
     alibcTaokeParams.extraParams = new HashMap<>();
     alibcTaokeParams.extraParams.put("taokeAppkey", appkey);

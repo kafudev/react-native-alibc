@@ -16,11 +16,9 @@ export default function App() {
       <Button
         onPress={() => {
           // mm_113435089_555800032_109026900326
-          Alibc.init('32486832', 'mm_113435089_555800032_109026900326').then(
-            (res: any) => {
-              console.log('Alibc init', res);
-            }
-          );
+          Alibc.init('32486832', '').then((res: any) => {
+            console.log('Alibc init', res);
+          });
         }}
         title="初始化百川sdk"
       />
