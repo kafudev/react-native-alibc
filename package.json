@@ -1,6 +1,6 @@
 {
   "name": "@kafudev/react-native-alibc",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "阿里百川sdk",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -45,7 +45,8 @@
   },
   "homepage": "https://github.com/kafudev/react-native-alibc#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^11.0.0",
