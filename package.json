@@ -26,7 +26,8 @@
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prepare": "bob build",
-    "release": "release-it",
+    "release": "dotenv -- release-it",
+    "release-ci": "dotenv -- release-it --ci",
     "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
     "bootstrap": "yarn example && yarn && yarn pods"
@@ -95,6 +96,7 @@
       "tagName": "v${version}"
     },
     "npm": {
+      "skipChecks": true,
       "publish": true
     },
     "github": {
@@ -149,5 +151,8 @@
         }
       ]
     ]
+  },
+  "dependencies": {
+    "dotenv-cli": "^4.0.0"
   }
 }
