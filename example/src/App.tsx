@@ -32,6 +32,14 @@ export default function App() {
       />
       <Button
         onPress={() => {
+          Alibc.isLogin().then((res: any) => {
+            console.log('Alibc isLogin', res);
+          });
+        }}
+        title="是否登录"
+      />
+      <Button
+        onPress={() => {
           Alibc.logout().then((res: any) => {
             console.log('Alibc logout', res);
           });

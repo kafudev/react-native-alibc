@@ -15,33 +15,12 @@ import com.reactnativealibc.AlibcPackage;
 
 import android.widget.Toast;
 
-import com.ali.auth.third.core.model.Session;
-import com.alibaba.baichuan.android.trade.AlibcTrade;
-import com.alibaba.baichuan.android.trade.AlibcTradeSDK;
-import com.alibaba.baichuan.android.trade.callback.AlibcTradeInitCallback;
-import com.alibaba.baichuan.android.trade.callback.AlibcTradeCallback;
-import com.alibaba.baichuan.android.trade.model.AlibcShowParams;
-import com.alibaba.baichuan.android.trade.model.OpenType;
-import com.alibaba.baichuan.android.trade.page.AlibcAddCartPage;
-import com.alibaba.baichuan.android.trade.page.AlibcBasePage;
-import com.alibaba.baichuan.android.trade.page.AlibcDetailPage;
-import com.alibaba.baichuan.android.trade.page.AlibcMyCartsPage;
-import com.alibaba.baichuan.android.trade.page.AlibcShopPage;
-import com.alibaba.baichuan.trade.biz.AlibcConstants;
-import com.alibaba.baichuan.trade.biz.context.AlibcTradeResult;
-import com.alibaba.baichuan.trade.biz.core.taoke.AlibcTaokeParams;
-import com.alibaba.baichuan.trade.biz.login.AlibcLogin;
-import com.alibaba.baichuan.trade.biz.login.AlibcLoginCallback;
-import com.alibaba.baichuan.trade.common.utils.AlibcLogger;
-import com.alibaba.baichuan.trade.common.AlibcMiniTradeCommon;
-
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
-      // return false;
     }
 
     @Override
@@ -69,22 +48,10 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-   SoLoader.init(this, /* native exopackage */ false);
-   initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); // Remove this line if you don't want
+    SoLoader.init(this, /* native exopackage */ false);
+    initializeFlipper(this, getReactNativeHost().getReactInstanceManager()); // Remove this line if you don't want
                                                                              // Flipper enabled
 
-//    AlibcMiniTradeCommon.turnOnDebug();
-//    AlibcTradeSDK.asyncInit(this, new AlibcTradeInitCallback() {
-//      @Override
-//      public void onSuccess() {
-//        Toast.makeText(MainApplication.this, "初始化成功", Toast.LENGTH_SHORT).show();
-//      }
-//
-//      @Override
-//      public void onFailure(int code, String msg) {
-//        Toast.makeText(MainApplication.this, "初始化失败", Toast.LENGTH_SHORT).show();
-//      }
-//    });
   }
 
   /**

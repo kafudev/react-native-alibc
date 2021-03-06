@@ -111,7 +111,10 @@ public class AlibcModule extends ReactContextBaseJavaModule {
       @Override
       public void onSuccess() {
         Toast.makeText(sContext, "初始化成功", Toast.LENGTH_SHORT).show();
-        promise.resolve(true);
+        WritableMap map = Arguments.createMap();
+        map.putInt("code", 1);
+        map.putString("msg", "初始化成功");
+        promise.resolve(map);
       }
 
       @Override
@@ -123,7 +126,7 @@ public class AlibcModule extends ReactContextBaseJavaModule {
         promise.resolve(map);
       }
     });
-    Toast.makeText(sContext, "初始化中", Toast.LENGTH_SHORT).show();
+    // Toast.makeText(sContext, "初始化中", Toast.LENGTH_SHORT).show();
   }
 
   /**
@@ -141,11 +144,12 @@ public class AlibcModule extends ReactContextBaseJavaModule {
         // userNick: 用户昵称
         Session session = AlibcLogin.getInstance().getSession();
         WritableMap map = Arguments.createMap();
+        map.putInt("code", 1);
+        map.putString("msg", "登录成功");
         map.putString("nick", session.nick);
         map.putString("avatarUrl", session.avatarUrl);
         map.putString("openId", session.openId);
         map.putString("openSid", session.openSid);
-        map.putString("err", "1");
         promise.resolve(map);
       }
 
@@ -154,7 +158,6 @@ public class AlibcModule extends ReactContextBaseJavaModule {
         WritableMap map = Arguments.createMap();
         map.putInt("code", code);
         map.putString("msg", msg);
-        map.putString("err", "0");
         promise.resolve(map);
       }
     });
@@ -176,14 +179,18 @@ public class AlibcModule extends ReactContextBaseJavaModule {
     if (AlibcLogin.getInstance().isLogin()) {
       Session session = AlibcLogin.getInstance().getSession();
       WritableMap map = Arguments.createMap();
+      map.putInt("code", 1);
+      map.putString("msg", "登录成功");
       map.putString("nick", session.nick);
       map.putString("avatarUrl", session.avatarUrl);
       map.putString("openId", session.openId);
       map.putString("openSid", session.openSid);
-      map.putString("err", "1");
       promise.resolve(map);
     } else {
-      promise.resolve(false);
+      WritableMap map = Arguments.createMap();
+      map.putInt("code", -1);
+      map.putString("msg", "无登录用户信息");
+      promise.resolve(map);
     }
 
   }
@@ -203,9 +210,15 @@ public class AlibcModule extends ReactContextBaseJavaModule {
         // openId：用户id
         // userNick: 用户昵称
         if (loginResult == 3) {
-          promise.resolve(true);
+          WritableMap map = Arguments.createMap();
+          map.putInt("code", 1);
+          map.putString("msg", "退出成功");
+          promise.resolve(map);
         } else {
-          promise.resolve(false);
+          WritableMap map = Arguments.createMap();
+          map.putInt("code", -1);
+          map.putString("msg", "退出失败");
+          promise.resolve(map);
         }
       }
 
@@ -256,7 +269,10 @@ public class AlibcModule extends ReactContextBaseJavaModule {
             @Override
             public void onTradeSuccess(AlibcTradeResult tradeResult) {
               AlibcLogger.i("MainActivity", "request success");
-              promise.resolve(true);
+              WritableMap map = Arguments.createMap();
+              map.putInt("code", 1);
+              map.putString("msg", "打开成功");
+              promise.resolve(map);
             }
 
             @Override
@@ -298,7 +314,10 @@ public class AlibcModule extends ReactContextBaseJavaModule {
             public void onTradeSuccess(AlibcTradeResult tradeResult) {
               // 交易成功回调（其他情形不回调）
               AlibcLogger.i("MainActivity", "open detail page success");
-              promise.resolve(true);
+              WritableMap map = Arguments.createMap();
+              map.putInt("code", 1);
+              map.putString("msg", "打开成功");
+              promise.resolve(map);
             }
 
             @Override
