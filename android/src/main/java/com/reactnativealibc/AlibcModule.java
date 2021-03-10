@@ -150,6 +150,12 @@ public class AlibcModule extends ReactContextBaseJavaModule {
         map.putString("avatarUrl", session.avatarUrl);
         map.putString("openId", session.openId);
         map.putString("openSid", session.openSid);
+        map.putString("userid", session.userid);
+        map.putString("topAccessToken", session.topAccessToken);
+        map.putString("topAuthCode", session.topAuthCode);
+        map.putString("topExpireTime", session.topExpireTime);
+        map.putString("ssoToken", session.ssoToken);
+        map.putString("havanaSsoToken", session.havanaSsoToken);
         promise.resolve(map);
       }
 
@@ -185,6 +191,12 @@ public class AlibcModule extends ReactContextBaseJavaModule {
       map.putString("avatarUrl", session.avatarUrl);
       map.putString("openId", session.openId);
       map.putString("openSid", session.openSid);
+      map.putString("userid", session.userid);
+      map.putString("topAccessToken", session.topAccessToken);
+      map.putString("topAuthCode", session.topAuthCode);
+      map.putString("topExpireTime", session.topExpireTime);
+      map.putString("ssoToken", session.ssoToken);
+      map.putString("havanaSsoToken", session.havanaSsoToken);
       promise.resolve(map);
     } else {
       WritableMap map = Arguments.createMap();
