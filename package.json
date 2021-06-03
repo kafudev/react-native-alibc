@@ -1,6 +1,6 @@
 {
   "name": "@kafudev/react-native-alibc",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "阿里百川sdk",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
