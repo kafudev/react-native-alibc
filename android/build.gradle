@@ -154,5 +154,5 @@ dependencies {
   // implementation 'com.alibaba.sdk.android:AlibcTradeCommon:4.0.0.16@aar'
   // implementation 'com.alibaba.sdk.android:AlibcTradeBiz:4.0.0.16@aar'
   // implementation 'com.alibaba.sdk.android:nb_trade:4.0.0.16@aar'
-  // implementation 'com.alibaba:fastjson:1.2.41@jar'
+  implementation 'com.alibaba:fastjson:1.2.41@jar'
 }
