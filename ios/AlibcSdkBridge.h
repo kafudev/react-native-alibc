@@ -13,8 +13,6 @@
 #endif
 #import <React/RCTBridgeModule.h>
 #import <Foundation/Foundation.h>
-#import <AlibabaAuthSDK/ALBBSDK.h>
-#import <AlibcTradeSDK/AlibcTradeSDK.h>
 #import <UIKit/UIKit.h>
 
 #if __has_include("RCTBridgeModule.h")
@@ -24,13 +22,6 @@
 #endif
 
 
-//#import "AlipaySDK.h"
-#import <AlipaySDK/AlipaySDK.h>
-//#if __has_include("AlipaySDK.h")
-//#import "AlipaySDK.h"
-//#else
-//#import <AlipaySDK/AlipaySDK.h>
-//#endif
 
 typedef void (^CompletionHandler)();
 
@@ -44,10 +35,6 @@ typedef void (^CompletionHandler)();
 - (void)logout: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 - (void)show: (NSDictionary *)param open:(NSString *)open resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 - (void)showInWebView: (UIWebView *)webView url:(NSString *)url param:(NSDictionary *)param;
-- (void)authWithInfo: (NSString *)infoStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
-- (void)pay: (NSString *)orderInfo resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
-- (void)payInterceptorWithUrl: (NSString *)urlStr resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
-- (void)getVersion: (RCTPromiseResolveBlock)resolve;
 @end
 
 

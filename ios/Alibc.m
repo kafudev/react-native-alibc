@@ -1,8 +1,6 @@
 #import "Alibc.h"
 #import "AlibcSdkBridge.h"
 
-#import <AlibcTradeSDK/AlibcTradeSDK.h>
-#import <AlibabaAuthSDK/ALBBSDK.h>
 #import <React/RCTLog.h>
 
 #define NOT_LOGIN (@"not login")

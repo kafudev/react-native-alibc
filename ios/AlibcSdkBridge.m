@@ -8,17 +8,16 @@
 
 #import "AlibcSdkBridge.h"
 #import "AlibcWebView.h"
+#import "ALiTradeSDKShareParam.h"
 #import <React/RCTLog.h>
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTUtils.h>
 #import <React/RCTImageLoader.h>
+#import <AlibabaAuthEntrance/ALBBSDK.h>
+#import <AlibabaAuthEntrance/ALBBCompatibleSession.h>
 #import <AlibcTradeSDK/AlibcTradeSDK.h>
-#import <AlibabaAuthSDK/ALBBSDK.h>
-#import "ALiTradeSDKShareParam.h"
-//#import "AlibcTradePageFactory.h"
+#import <AlibcTradeBiz/AlibcWebViewController.h>
 #import <AlibcTradeSDK/AlibcTradePageFactory.h>
-#import "ALiTradeWebViewController.h"
-#import "TaobaoOAuthViewController.h"
 #import "UIKit/UIKit.h"
 
 
@@ -28,8 +27,6 @@
 //
 //#import <AlibcTradeSDK/AlibcTradeService.h>
 //#import <AlibcTradeSDK/AlibcTradePageFactory.h>
-
-
 
 
 #define NOT_LOGIN (@"not login")
@@ -67,16 +64,16 @@ RCT_EXPORT_METHOD(init:(NSString *)pid forceH5:(BOOL)forceH5 resolver:(RCTPromis
     // 百川平台基础SDK初始化，加载并初始化各个业务能力插件
 
 
-    
+
     // 初始化AlibabaAuthSDK
     [[ALBBSDK sharedInstance] ALBBSDKInit];
-    
+
     // 开发阶段打开日志开关，方便排查错误信息
     //默认调试模式打开日志,release关闭,可以不调用下面的函数
     [[AlibcTradeSDK sharedInstance] setDebugLogOpen:YES];
     // 百川平台基础SDK初始化，加载并初始化各个业务能力插件
 //    [[AlibcTradeSDK sharedInstance] setDebugLogOpen:YES];//开发阶段打开日志开关，方便排查错误信息
-    
+
     [[AlibcTradeSDK sharedInstance] setIsvVersion:@"2.2.2"];
     [[AlibcTradeSDK sharedInstance] setIsvAppName:@"baichuanDemo"];
     [[AlibcTradeSDK sharedInstance] asyncInitWithSuccess:^{
@@ -90,14 +87,14 @@ RCT_EXPORT_METHOD(init:(NSString *)pid forceH5:(BOOL)forceH5 resolver:(RCTPromis
     taokeParams = [[AlibcTradeTaokeParams alloc] init];
     taokeParams.pid = pid;
     [[AlibcTradeSDK sharedInstance] setTaokeParams:taokeParams];
-    
+
     showParams = [[AlibcTradeShowParams alloc] init];
     showParams.openType = AlibcOpenTypeAuto;
-    
+
     //设置全局的app标识，在电商模块里等同于isv_code
     //没有申请过isv_code的接入方,默认不需要调用该函数
     //[[AlibcTradeSDK sharedInstance] setISVCode:@"your_isv_code"];
-    
+
     // 设置全局配置，是否强制使用h5
 //    [[AlibcTradeSDK sharedInstance] setIsForceH5:YES];
 }
@@ -109,7 +106,7 @@ RCT_EXPORT_METHOD(init:(NSString *)pid forceH5:(BOOL)forceH5 resolver:(RCTPromis
     return YES;
 }
 - (AlibcOpenType)openType{
-    
+
     AlibcOpenType openType=AlibcOpenTypeAuto;
     switch ([ALiTradeSDKShareParam sharedInstance].openType) {
         case 0:
@@ -131,12 +128,12 @@ RCT_EXPORT_METHOD(init:(NSString *)pid forceH5:(BOOL)forceH5 resolver:(RCTPromis
 RCT_EXPORT_METHOD(login: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     [[ALBBSDK sharedInstance] auth:[UIApplication sharedApplication].delegate.window.rootViewController
-                   successCallback:^(ALBBSession *session) {
-                       ALBBUser *s = [session getUser];
+                   successCallback:^ {
+                       ALBBUser *s = [[ALBBCompatibleSession sharedInstance] getUser];
                        NSDictionary *ret = @{@"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid,@"err":@"1"};
                        resolve(ret);
                    }
-                   failureCallback:^(ALBBSession *session, NSError *error) {
+                   failureCallback:^(NSError *error) {
                        NSDictionary *ret = @{@"code": @(error.code), @"msg":error.description,@"err":@"0"};
                        resolve(ret);
                    }
@@ -145,18 +142,18 @@ RCT_EXPORT_METHOD(login: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
 RCT_EXPORT_METHOD(isLogin: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 //- (void)isLogin: (RCTResponseSenderBlock)callback
 {
-    bool isLogin = [[ALBBSession sharedInstance] isLogin];
+    bool isLogin = [[ALBBCompatibleSession sharedInstance] isLogin];
     resolve([NSNumber numberWithBool: isLogin]);
 }
 RCT_EXPORT_METHOD(getUser: resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 //- (void)getUser: (RCTResponseSenderBlock)callback
 {
-    if([[ALBBSession sharedInstance] isLogin]){
-        ALBBUser *s = [[ALBBSession sharedInstance] getUser];
+    if([[ALBBCompatibleSession sharedInstance] isLogin]){
+        ALBBUser *s = [[ALBBCompatibleSession sharedInstance] getUser];
         NSDictionary *ret = @{@"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid,@"err":@"1"};
         resolve(ret);
     } else {
-        
+
         resolve([NSNull null]);
 //        resolve(NOT_LOGIN);
     }
@@ -172,7 +169,7 @@ RCT_EXPORT_METHOD(logout: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRe
 //- (void)show: (NSDictionary *)param callback: (RCTResponseSenderBlock)callback
 RCT_EXPORT_METHOD(show: (NSDictionary *)param open:(NSString *)open resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    
+
     NSString *type = param[@"type"];
     showParams.openType = AlibcNativeFailModeNone;
     if([open isEqualToString:@"None"]){
@@ -193,10 +190,10 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)param open:(NSString *)open resolver:(RC
         page = [AlibcTradePageFactory itemDetailPage:(NSString *)param[@"payload"]];
     } else if ([type isEqualToString:@"url"]) {
         page = [AlibcTradePageFactory page:(NSString *)param[@"payload"]];
-        ALiTradeWebViewController* myView = [[ALiTradeWebViewController alloc] init];
+        AlibcWebViewController* myView = [[AlibcWebViewController alloc] init];
 //        [[AlibcTradeSDK sharedInstance].tradeService show: myView webView: myView.webView page:page showParams:nil taoKeParams: nil trackParam: trackParam tradeProcessSuccessCallback:nil tradeProcessFailedCallback:nil];
-        
-        
+
+
         NSInteger res  =  [[AlibcTradeSDK sharedInstance].tradeService
          openByUrl:param[@"payload"]
          identity:@"trade"
@@ -217,7 +214,7 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)param open:(NSString *)open resolver:(RC
             [appRootVC presentViewController:myView animated:YES completion:nil];
 
         }
-        
+
 //        page = [ALiTradePageFactory page: (NSString *)param[@"payload"]];
 //        [self _openByUrl:(NSString *)param[@"payload"]];
 //        [self _openByUrl:page];
@@ -239,7 +236,7 @@ RCT_EXPORT_METHOD(show: (NSDictionary *)param open:(NSString *)open resolver:(RC
         RCTLog(@"not implement");
         return;
     }
-    
+
     [self _show:page BizCode:(NSString *)bizCode resolver:resolve rejecter:reject];
 }
 
@@ -248,7 +245,7 @@ RCT_EXPORT_METHOD(_show: (id<AlibcTradePage>)page BizCode:(NSString *)bizCode re
 {
 //    BOOL isNeedPush=[ALiTradeSDKShareParam sharedInstance].isNeedPush;
 //    BOOL isBindWebview=[ALiTradeSDKShareParam sharedInstance].isBindWebview;
-    
+
     showParams.isNeedPush=NO;
     showParams.nativeFailMode=AlibcNativeFailModeJumpH5;
 //    showParams.isNeedCustomNativeFailMode = [ALiTradeSDKShareParam sharedInstance].isNeedCustomFailMode;
@@ -257,13 +254,13 @@ RCT_EXPORT_METHOD(_show: (id<AlibcTradePage>)page BizCode:(NSString *)bizCode re
     showParams.openType = AlibcNativeFailModeJumpH5;
     showParams.isNeedCustomNativeFailMode = YES;
 //    id<AlibcTradeService> service = [AlibcTradeSDK sharedInstance].tradeService;
-//    ALiTradeWebViewController* view = [[ALiTradeWebViewController alloc] init];
-    TaobaoOAuthViewController* view = [[TaobaoOAuthViewController alloc] init];
+//    AlibcWebViewController* view = [[AlibcWebViewController alloc] init];
+    AlibcWebViewController* view = [[AlibcWebViewController alloc] init];
 //    showParams.isNeedPush = YES;
     NSInteger res  =  [[AlibcTradeSDK sharedInstance].tradeService
      openByBizCode:bizCode
      page:page
-     webView:view.myWebView
+     webView:view.webView
      parentController:view
      showParams:showParams// 跳转方式
      taoKeParams:taokeParams  //配置 阿里妈妈信息
@@ -281,16 +278,16 @@ RCT_EXPORT_METHOD(_show: (id<AlibcTradePage>)page BizCode:(NSString *)bizCode re
          resolve(ret);
      }
     ];
-    
+
     if (res == 1) {
         UIViewController *appRootVC = [UIApplication sharedApplication].keyWindow.rootViewController;
 
         [appRootVC presentViewController:view animated:YES completion:nil];
 
     }
-    
-    
-    
+
+
+
     //        [self presentViewController:view animated:YES completion:nil];
     //        [self presentViewController:view animated:YES completion:nil];
     //        [self.navigationController pushViewController:view animated:YES];
@@ -316,7 +313,7 @@ RCT_EXPORT_METHOD(_show: (id<AlibcTradePage>)page BizCode:(NSString *)bizCode re
         RCTLog(@"not implement");
         return;
     }
-    
+
     [self _showInWebView:webView url:url page:page];
 }
 
@@ -325,12 +322,12 @@ RCT_EXPORT_METHOD(_show: (id<AlibcTradePage>)page BizCode:(NSString *)bizCode re
 -(NSDictionary *)customParam{
     NSDictionary *customParam=[NSDictionary dictionaryWithDictionary:[ALiTradeSDKShareParam sharedInstance].customParams];
     return customParam;
-    
+
 }
 
 RCT_EXPORT_METHOD(_openByUrl:url)
 {
-    ALiTradeWebViewController* view = [[ALiTradeWebViewController alloc] init];
+    AlibcWebViewController* view = [[AlibcWebViewController alloc] init];
     id<AlibcTradeService> service = [AlibcTradeSDK sharedInstance].tradeService;
     [[AlibcTradeSDK sharedInstance].tradeService
      openByUrl:url
@@ -393,55 +390,6 @@ RCT_EXPORT_METHOD(_openByUrl:url)
                                                        });
          }
      ];
-}
-
-
-- (void)handleOpenURL:(NSNotification *)notification {
-    NSString *urlString = notification.userInfo[@"url"];
-    NSURL *url = [NSURL URLWithString:urlString];
-    if ([url.host isEqualToString:@"safepay"]) {
-        __weak __typeof__(self) weakSelf = self;
-        [AlipaySDK.defaultService processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
-            NSLog(@"processOrderWithPaymentResult = %@", resultDic);
-            if (weakSelf.payOrderResolve) {
-                weakSelf.payOrderResolve(resultDic);
-                weakSelf.payOrderResolve = nil;
-            }
-        }];
-        
-        [AlipaySDK.defaultService processAuth_V2Result:url standbyCallback:^(NSDictionary *resultDic) {
-            NSLog(@"processAuth_V2Result = %@", resultDic);
-        }];
-    }
-}
-
-RCT_EXPORT_METHOD(authWithInfo:(NSString *)infoStr
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
-    [AlipaySDK.defaultService auth_V2WithInfo:infoStr fromScheme:self.appScheme callback:^(NSDictionary *resultDic) {
-        resolve(resultDic);
-    }];
-}
-
-RCT_EXPORT_METHOD(pay:(NSString *)orderInfo
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
-    self.payOrderResolve = resolve;
-    [AlipaySDK.defaultService payOrder:orderInfo fromScheme:self.appScheme callback:^(NSDictionary *resultDic) {
-        resolve(resultDic);
-    }];
-}
-
-RCT_EXPORT_METHOD(payInterceptorWithUrl:(NSString *)urlStr
-                  resolver:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
-    [AlipaySDK.defaultService payInterceptorWithUrl:urlStr fromScheme:self.appScheme callback:^(NSDictionary *resultDic) {
-        resolve(resultDic);
-    }];
-}
-
-RCT_EXPORT_METHOD(getVersion:(RCTPromiseResolveBlock)resolve) {
-    resolve(AlipaySDK.defaultService.currentVersion);
 }
 
 - (NSString *)appScheme {
