@@ -162,7 +162,7 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType clie
     if ([type isEqualToString:@"url"]) {
         AlibcWebViewController* view = [[AlibcWebViewController alloc] init];
         NSInteger res  =  [[AlibcTradeSDK sharedInstance].tradeService
-         openByUrl:param[@"url"]
+         openByUrl:(NSString *)param[@"url"]
          identity:@"trade"
          webView:view.webView
          parentController:view
