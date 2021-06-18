@@ -48,7 +48,7 @@ RCT_EXPORT_METHOD(init:(NSString *)appkey pid:(NSString *)pid resolver:(RCTPromi
     //如果没有阿里妈妈的淘客账号,setTaokeParams函数需要调用
     taokeParams = [[AlibcTradeTaokeParams alloc] init];
     taokeParams.pid = pid;
-    trackParam.extParams = @{
+    taokeParams.extParams = @{
       @"taobaoAppKey":appkey
     };
     [[AlibcTradeSDK sharedInstance] setTaokeParams:taokeParams];
@@ -73,7 +73,7 @@ RCT_EXPORT_METHOD(init:(NSString *)appkey pid:(NSString *)pid resolver:(RCTPromi
     [[AlibcTradeSDK sharedInstance] setIsvAppName:@"baichuanDemo"];
     [[AlibcTradeSDK sharedInstance] asyncInitWithSuccess:^{
         TLOG_INFO(@"百川SDK初始化成功");
-        NSDictionary *ret = @{@"code": 1, @"msg": @"初始化成功"};
+        NSDictionary *ret = @{@"code": @1, @"msg": @"初始化成功"};
         resolve(ret);
     } failure:^(NSError *error) {
         TLOG_INFO(@"百川SDK初始化失败");
@@ -95,7 +95,7 @@ RCT_EXPORT_METHOD(login: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRej
     [[ALBBSDK sharedInstance] auth:[UIApplication sharedApplication].delegate.window.rootViewController
                    successCallback:^ {
                        ALBBUser *s = [[ALBBCompatibleSession sharedInstance] getUser];
-                       NSDictionary *ret = @{@"code": 1, @"msg": @"登录成功", @"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid, @"userid":s.userid, @"topAccessToken":s.topAccessToken, @"topAuthCode":s.topAuthCode, @"topExpireTime":s.topExpireTime, @"ssoToken":s.ssoToken, @"havanaSsoToken":s.havanaSsoToken};
+                       NSDictionary *ret = @{@"code": @1, @"msg": @"登录成功", @"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid, @"topAccessToken":s.topAccessToken, @"topAuthCode":s.topAuthCode,};
                        resolve(ret);
                    }
                    failureCallback:^(NSError *error) {
@@ -114,10 +114,10 @@ RCT_EXPORT_METHOD(getUser: resolver:(RCTPromiseResolveBlock)resolve rejecter:(RC
 {
     if([[ALBBCompatibleSession sharedInstance] isLogin]){
         ALBBUser *s = [[ALBBCompatibleSession sharedInstance] getUser];
-        NSDictionary *ret = @{@"code": 1, @"msg": @"登录用户信息", @"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid, @"userid":s.userid, @"topAccessToken":s.topAccessToken, @"topAuthCode":s.topAuthCode, @"topExpireTime":s.topExpireTime, @"ssoToken":s.ssoToken, @"havanaSsoToken":s.havanaSsoToken};
+        NSDictionary *ret = @{@"code": @1, @"msg": @"登录用户信息", @"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid, @"topAccessToken":s.topAccessToken, @"topAuthCode":s.topAuthCode};
         resolve(ret);
     } else {
-        NSDictionary *ret = @{@"code": -1, @"msg": @"无登录用户信息"};
+        NSDictionary *ret = @{@"code": @-1, @"msg": @"无登录用户信息"};
         resolve(ret);
     }
 }
@@ -125,8 +125,8 @@ RCT_EXPORT_METHOD(getUser: resolver:(RCTPromiseResolveBlock)resolve rejecter:(RC
 RCT_EXPORT_METHOD(logout: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     [[ALBBSDK sharedInstance] logout];
-    NSDictionary *ret = @{@"code": 1, @"msg": @"退出成功"};
-    esolve(ret);
+    NSDictionary *ret = @{@"code": @1, @"msg": @"退出成功"};
+    resolve(ret);
 }
 
 RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
@@ -157,7 +157,7 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType reso
          taoKeParams:taokeParams
          trackParam:nil
          tradeProcessSuccessCallback:^(AlibcTradeResult * _Nullable result) {
-            NSDictionary *ret = @{@"code": 1, @"msg":@"打开成功"};
+            NSDictionary *ret = @{@"code": @1, @"msg":@"打开成功"};
             resolve(ret);
          } tradeProcessFailedCallback:^(NSError * _Nullable error) {
             NSDictionary *ret = @{@"code": @(error.code), @"msg":error.description};
@@ -209,7 +209,7 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType reso
      taoKeParams:taokeParams  //配置 阿里妈妈信息
      trackParam:nil // [self customParam]
      tradeProcessSuccessCallback:^(AlibcTradeResult * _Nullable result) {
-        NSDictionary *ret = @{@"code": 1, @"msg":@"打开成功"};
+        NSDictionary *ret = @{@"code": @1, @"msg":@"打开成功"};
         resolve(ret);
      } tradeProcessFailedCallback:^(NSError * _Nullable error) {
         NSDictionary *ret = @{@"code": @(error.code), @"msg":error.description};
