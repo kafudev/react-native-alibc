@@ -50,8 +50,8 @@ RCT_EXPORT_METHOD(logout: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRe
     [[AlibcSdkBridge sharedInstance] logout:resolve rejecter:reject];
 }
 
-RCT_EXPORT_METHOD(show: (NSDictionary *)param open:(NSString *)open resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
-    [[AlibcSdkBridge sharedInstance] show:param open:open resolver:resolve rejecter:reject];
+RCT_EXPORT_METHOD(open: (NSDictionary *)param open:(NSString *)openType resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject){
+    [[AlibcSdkBridge sharedInstance] open:param open:openType resolver:resolve rejecter:reject];
 }
 
 @end
