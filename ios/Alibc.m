@@ -26,9 +26,9 @@ RCT_REMAP_METHOD(multiply,
   resolve(result);
 }
 
-RCT_EXPORT_METHOD(init: (NSString *)pid forceH5:(BOOL)forceH5 resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(init: (NSString *)appkey  pid:(NSString *)pid resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [[AlibcSdkBridge sharedInstance] init:pid forceH5:forceH5 resolver:resolve rejecter:reject];
+    [[AlibcSdkBridge sharedInstance] init:appkey pid:pid resolver:resolve rejecter:reject];
 }
 
 RCT_EXPORT_METHOD(login: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
