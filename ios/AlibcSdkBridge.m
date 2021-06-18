@@ -65,6 +65,8 @@ RCT_EXPORT_METHOD(init:(NSString *)appkey pid:(NSString *)pid resolver:(RCTPromi
 
     // 初始化AlibabaAuthSDK
     [[ALBBSDK sharedInstance] ALBBSDKInit];
+    [[ALBBSDK sharedInstance] setAppkey:appkey];
+
     // 百川平台基础SDK初始化，加载并初始化各个业务能力插件
     // 开发阶段打开日志开关，方便排查错误信息
     // 默认调试模式打开日志,release关闭,可以不调用下面的函数
@@ -92,18 +94,29 @@ RCT_EXPORT_METHOD(init:(NSString *)appkey pid:(NSString *)pid resolver:(RCTPromi
 
 RCT_EXPORT_METHOD(login: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-    [[ALBBSDK sharedInstance] auth:[UIApplication sharedApplication].delegate.window.rootViewController
-                   successCallback:^ {
-                       ALBBUser *s = [[ALBBCompatibleSession sharedInstance] getUser];
-                       NSDictionary *ret = @{@"code": @1, @"msg": @"登录成功", @"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid, @"topAccessToken":s.topAccessToken, @"topAuthCode":s.topAuthCode,};
-                       resolve(ret);
-                   }
-                   failureCallback:^(NSError *error) {
-                       NSDictionary *ret = @{@"code": @(error.code), @"msg":error.description};
-                       resolve(ret);
-                   }
-     ];
+  if(![[ALBBCompatibleSession sharedInstance] isLogin]) {
+    [[ALBBSDK sharedInstance] setH5Only:NO];
+    [[ALBBSDK sharedInstance] auth:[UIApplication sharedApplication].delegate.window.rootViewController successCallback:^{
+        NSString *tip = [NSString stringWithFormat:@"登录的用户信息:%@",[[ALBBCompatibleSession sharedInstance] getUser]];
+        NSLog(@"%@", tip);
+        ALBBUser *s = [[ALBBCompatibleSession sharedInstance] getUser];
+        NSDictionary *ret = @{@"code": @1, @"msg": @"登录成功", @"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid, @"topAccessToken":s.topAccessToken, @"topAuthCode":s.topAuthCode,};
+        resolve(ret);
+    } failureCallback:^(NSError *error) {
+        NSString *tip=[NSString stringWithFormat:@"登录失败:%@",@""];
+        NSLog(@"%@", tip);
+        NSDictionary *ret = @{@"code": @(error.code), @"msg":error.description};
+        resolve(ret);
+    }];
+  } else {
+      NSString *tip = [NSString stringWithFormat:@"登录的用户信息:%@",[[ALBBCompatibleSession sharedInstance] getUser]];
+      NSLog(@"%@", tip);
+      ALBBUser *s = [[ALBBCompatibleSession sharedInstance] getUser];
+      NSDictionary *ret = @{@"code": @1, @"msg": @"登录成功", @"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid, @"topAccessToken":s.topAccessToken, @"topAuthCode":s.topAuthCode,};
+      resolve(ret);
+  }
 }
+
 RCT_EXPORT_METHOD(isLogin: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     bool isLogin = [[ALBBCompatibleSession sharedInstance] isLogin];
