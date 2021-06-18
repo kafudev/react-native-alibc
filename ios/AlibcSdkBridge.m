@@ -142,7 +142,7 @@ RCT_EXPORT_METHOD(logout: (RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRe
     resolve(ret);
 }
 
-RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType clientType:(NSString *)clientType resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
     NSString *type = param[@"type"];
     showParams.openType = AlibcNativeFailModeNone;
