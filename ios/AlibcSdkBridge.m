@@ -160,12 +160,12 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType reso
     NSString *bizCode = nil;
     id<AlibcTradePage> page;
     if ([type isEqualToString:@"url"]) {
-        AlibcWebViewController* myView = [[AlibcWebViewController alloc] init];
+        AlibcWebViewController* view = [[AlibcWebViewController alloc] init];
         NSInteger res  =  [[AlibcTradeSDK sharedInstance].tradeService
          openByUrl:param[@"url"]
          identity:@"trade"
-         webView:myView.webView
-         parentController:myView
+         webView:view.webView
+         parentController:view
          showParams:showParams
          taoKeParams:taokeParams
          trackParam:nil
@@ -179,7 +179,7 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType reso
         ];
         if (res == 1) {
             UIViewController *appRootVC = [UIApplication sharedApplication].keyWindow.rootViewController;
-            [appRootVC presentViewController:myView animated:YES completion:nil];
+            [appRootVC presentViewController:view animated:YES completion:nil];
         }
         return;
     } else if ([type isEqualToString:@"detail"]) {
@@ -207,12 +207,10 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType reso
     // 调用openByBizCode
     showParams.isNeedPush=NO;
     showParams.nativeFailMode=AlibcNativeFailModeJumpH5;
-    // showParams.linkKey=@"taobao";
+    showParams.linkKey=@"taobao";
     showParams.openType = AlibcOpenTypeAuto;
-    showParams.openType = AlibcNativeFailModeJumpH5;
     showParams.isNeedCustomNativeFailMode = YES;
     AlibcWebViewController* view = [[AlibcWebViewController alloc] init];
-    // showParams.isNeedPush = YES;
     NSInteger res  =  [[AlibcTradeSDK sharedInstance].tradeService
      openByBizCode:bizCode
      page:page
