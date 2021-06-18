@@ -2,8 +2,8 @@
 //  AlibcSdkBridge.h
 //  RNAlibcSdk
 //
-//  Created by et on 17/4/18.
-//  Copyright © 2017年 Facebook. All rights reserved.
+//  Created by et on 2021/4/18.
+//  Copyright © 2021年 Facebook. All rights reserved.
 //
 
 #if __has_include(<React/RCTBridgeModule.h>)
@@ -36,7 +36,3 @@ typedef void (^CompletionHandler)();
 - (void)open: (NSDictionary *)param openType:(NSString *)openType resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 @end
 
-
-//@interface AlibcSdkBridge : NSObject
-//
-//@end

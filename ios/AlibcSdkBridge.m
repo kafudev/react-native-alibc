@@ -2,12 +2,11 @@
 //  AlibcSdkBridge.m
 //  RNAlibcSdk
 //
-//  Created by et on 17/4/18.
-//  Copyright © 2017年 Facebook. All rights reserved.
+//  Created by et on 2021/4/18.
+//  Copyright © 2021年 Facebook. All rights reserved.
 //
 
 #import "AlibcSdkBridge.h"
-#import "AlibcWebView.h"
 #import <React/RCTLog.h>
 #import <React/RCTEventDispatcher.h>
 #import <React/RCTUtils.h>
@@ -45,7 +44,7 @@ static NSString *const kOpenURLNotification = @"RCTOpenURLNotification";
 RCT_EXPORT_MODULE();
 RCT_EXPORT_METHOD(init:(NSString *)appkey pid:(NSString *)pid resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 {
-     // 配置全局的淘客参数
+    // 配置全局的淘客参数
     //如果没有阿里妈妈的淘客账号,setTaokeParams函数需要调用
     taokeParams = [[AlibcTradeTaokeParams alloc] init];
     taokeParams.pid = pid;
@@ -66,11 +65,10 @@ RCT_EXPORT_METHOD(init:(NSString *)appkey pid:(NSString *)pid resolver:(RCTPromi
 
     // 初始化AlibabaAuthSDK
     [[ALBBSDK sharedInstance] ALBBSDKInit];
-    // 开发阶段打开日志开关，方便排查错误信息
-    //默认调试模式打开日志,release关闭,可以不调用下面的函数
-    [[AlibcTradeSDK sharedInstance] setDebugLogOpen:YES];
     // 百川平台基础SDK初始化，加载并初始化各个业务能力插件
-    // [[AlibcTradeSDK sharedInstance] setDebugLogOpen:YES];//开发阶段打开日志开关，方便排查错误信息
+    // 开发阶段打开日志开关，方便排查错误信息
+    // 默认调试模式打开日志,release关闭,可以不调用下面的函数
+    [[AlibcTradeSDK sharedInstance] setDebugLogOpen:YES]; //开发阶段打开日志开关，方便排查错误信息
     [[AlibcTradeSDK sharedInstance] setIsvVersion:@"2.2.2"];
     [[AlibcTradeSDK sharedInstance] setIsvAppName:@"baichuanDemo"];
     [[AlibcTradeSDK sharedInstance] asyncInitWithSuccess:^{
@@ -82,8 +80,8 @@ RCT_EXPORT_METHOD(init:(NSString *)appkey pid:(NSString *)pid resolver:(RCTPromi
         NSDictionary *ret = @{@"code": @(error.code), @"msg":error.description};
         resolve(ret);
     }];
-
 }
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -116,7 +114,7 @@ RCT_EXPORT_METHOD(getUser: resolver:(RCTPromiseResolveBlock)resolve rejecter:(RC
 {
     if([[ALBBCompatibleSession sharedInstance] isLogin]){
         ALBBUser *s = [[ALBBCompatibleSession sharedInstance] getUser];
-        NSDictionary *ret = @{@"code": 1, @"msg": @"登录成功", @"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid, @"userid":s.userid, @"topAccessToken":s.topAccessToken, @"topAuthCode":s.topAuthCode, @"topExpireTime":s.topExpireTime, @"ssoToken":s.ssoToken, @"havanaSsoToken":s.havanaSsoToken};
+        NSDictionary *ret = @{@"code": 1, @"msg": @"登录用户信息", @"nick": s.nick, @"avatarUrl":s.avatarUrl, @"openId":s.openId, @"openSid":s.openSid, @"userid":s.userid, @"topAccessToken":s.topAccessToken, @"topAuthCode":s.topAuthCode, @"topExpireTime":s.topExpireTime, @"ssoToken":s.ssoToken, @"havanaSsoToken":s.havanaSsoToken};
         resolve(ret);
     } else {
         NSDictionary *ret = @{@"code": -1, @"msg": @"无登录用户信息"};
