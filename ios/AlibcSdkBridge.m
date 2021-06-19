@@ -180,8 +180,6 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType clie
         if (res == 1) {
             UIViewController *appRootVC = [UIApplication sharedApplication].keyWindow.rootViewController;
             [appRootVC presentViewController:view animated:YES completion:nil];
-            NSDictionary *ret = @{@"code": @1, @"msg":@"打开成功"};
-            resolve(ret);
         }
         return;
     } else if ([type isEqualToString:@"detail"]) {
@@ -232,8 +230,6 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType clie
     if (res == 1) {
         UIViewController *appRootVC = [UIApplication sharedApplication].keyWindow.rootViewController;
         [appRootVC presentViewController:view animated:YES completion:nil];
-        NSDictionary *ret = @{@"code": @1, @"msg":@"打开成功"};
-        resolve(ret);
     }
     return;
 }
