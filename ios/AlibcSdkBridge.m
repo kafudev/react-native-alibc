@@ -180,6 +180,8 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType clie
         if (res == 1) {
             UIViewController *appRootVC = [UIApplication sharedApplication].keyWindow.rootViewController;
             [appRootVC presentViewController:view animated:YES completion:nil];
+            NSDictionary *ret = @{@"code": @1, @"msg":@"打开成功"};
+            resolve(ret);
         }
         return;
     } else if ([type isEqualToString:@"detail"]) {
@@ -230,7 +232,10 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType clie
     if (res == 1) {
         UIViewController *appRootVC = [UIApplication sharedApplication].keyWindow.rootViewController;
         [appRootVC presentViewController:view animated:YES completion:nil];
+        NSDictionary *ret = @{@"code": @1, @"msg":@"打开成功"};
+        resolve(ret);
     }
+    return;
 }
 
 - (NSString *)appScheme {
@@ -245,14 +250,4 @@ RCT_EXPORT_METHOD(open: (NSDictionary *)param openType:(NSString *)openType clie
     return nil;
 }
 
-- (void)scene:(UIScene *)scene openURLContexts:(NSSet<UIOpenURLContext *> *)URLContexts {
-    [URLContexts enumerateObjectsUsingBlock:^(UIOpenURLContext * _Nonnull obj,
-                                              BOOL * _Nonnull stop) {
-        if([[AlibcTradeSDK sharedInstance] application:nil
-                                               openURL:obj.URL
-                                               options:nil]){
-            *stop = YES;
-        }
-    }];
-}
 @end
