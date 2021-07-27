@@ -134,6 +134,7 @@ dependencies {
   api 'com.facebook.react:react-native:+'
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
+
   //登陆
   // implementation 'com.ali.auth.sdk:alibabauth_core:2.0.0.11@aar'
   // implementation 'com.ali.auth.sdk:alibabauth_ui:2.0.0.11@aar'
