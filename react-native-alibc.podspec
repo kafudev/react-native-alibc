@@ -16,7 +16,6 @@ Pod::Spec.new do |s|
 
   s.source_files = "ios/**/*.{h,m,mm,swift}"
 
-
   s.dependency "React-Core"
   s.dependency 'AlibcTradeSDK','4.0.1.15'
   s.dependency 'AliAuthSDK','1.1.0.42-BC3'
@@ -26,4 +25,8 @@ Pod::Spec.new do |s|
   s.dependency 'BCUserTrack','5.2.0.18-appkeys'
   s.dependency 'UTDID','1.5.0.91'
   s.dependency 'WindVane','8.5.0.46-bc11'
+
+  s.frameworks = "CoreMotion", "CoreTelephony"
+
+  s.compiler_flags = '-lstdc++', '-ObjC'
 end
